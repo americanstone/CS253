@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Gradle: org.checkerframework:checker-compat-qual:2.5.5@jar">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/repository/org/checkerframework/checker-compat-qual/2.5.5/checker-compat-qual-2.5.5.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -413,7 +413,7 @@ public class UnsynchronizedArray<E>
          * Current position in the Array (defaults to 0).
          */
         // TODO - you fill in here.
-        int cursor;
+        int cursor = 0;
         /**
          * Index of last element returned; -1 if no such element.
          */
