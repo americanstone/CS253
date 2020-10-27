@@ -1,21 +1,29 @@
 package edu.vanderbilt.imagecrawler.utils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Spliterator;
+import java.util.function.Consumer;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import static edu.vanderbilt.imagecrawler.utils.Assignment.Name.Assignment1a;
+import static edu.vanderbilt.imagecrawler.utils.Assignment.Name.Assignment1b;
+import static edu.vanderbilt.imagecrawler.utils.Assignment.Name.Assignment2a;
+import static edu.vanderbilt.imagecrawler.utils.Assignment.isAssignment;
+import static edu.vanderbilt.imagecrawler.utils.Assignment.isGraduate;
+import static edu.vanderbilt.imagecrawler.utils.Assignment.isUndergraduate;
 
 /**
  * A generic unsynchronized array class implemented via a single
  * contiguous buffer.
  */
 @SuppressWarnings("ALL")
-public class UnsynchronizedArray<E>
-        implements Array<E> {
+public class UnsynchronizedArray<E> implements Array<E> {
     /**
      * Default initial capacity (declared 'protected' for unit tests).
      */
@@ -38,7 +46,7 @@ public class UnsynchronizedArray<E>
      * i.e., where a call to add() will place the new element:
      * mElementData[mSize] = element.
      */
-    private int mSize;
+    protected int mSize;
 
     /*
      * The following methods and nested iterator class use Java 7 features.
@@ -121,6 +129,7 @@ public class UnsynchronizedArray<E>
      * this array, or -1 if this array does not contain the element
      */
     public int indexOf(Object o) {
+        // TODO -- you fill in here (replace 'return -1' with proper code).
         if (o == null) {
             for (int i = 0; i < mSize; i++)
                 if (mElementData[i]==null)
@@ -230,8 +239,7 @@ public class UnsynchronizedArray<E>
     public E get(int index) {
         // TODO -- you fill in here (replace 'return null' with proper code).
         rangeCheck(index);
-
-        return (E)mElementData[index];
+        return (E) mElementData[index];
     }
 
     /**
@@ -246,7 +254,6 @@ public class UnsynchronizedArray<E>
     public E set(int index, E element) {
         // TODO -- you fill in here (replace 'return null' with proper code).
         rangeCheck(index);
-
         E oldValue = (E)mElementData[index];
         mElementData[index] = element;
         return oldValue;
@@ -272,9 +279,10 @@ public class UnsynchronizedArray<E>
      * Normally should be declared as 'private', but for unit test access,
      * has been declared 'protected'.
      */
-    public void ensureCapacityInternal(int minCapacity) {
+    protected void ensureCapacityInternal(int minCapacity) {
         // TODO -- you fill in here.
         ensureExplicitCapacity(calculateCapacity(mElementData, minCapacity));
+
     }
     private void ensureExplicitCapacity(int minCapacity) {
 
@@ -385,8 +393,92 @@ public class UnsynchronizedArray<E>
      * sequence
      */
     public Iterator<E> iterator() {
-        // TODO -- you fill in here (replace 'return null' with proper code).
-        return new ArrayIterator();
+        if ( isUndergraduate(Assignment1b)) {
+            // TODO -- you fill in here replacing this statement with your solution.
+            return new ArrayIterator();
+        } else {
+            return new ArrayIterator();
+        }
+    }
+
+    /**
+     * Replaces each element of this list with the result of applying
+     * the operator to that element.  Errors or runtime exceptions
+     * thrown by the operator are relayed to the caller.
+     *
+     * @param operator the operator to applyTransform to each element
+     */
+    public void replaceAll(UnaryOperator<E> operator) {
+        // This method is a no-op in Assignment 1a.
+        if (isAssignment(Assignment1b)) {
+            // TODO - you fill in here (this implementation can use a for loop).
+            for(int i = 0; i < mSize; i++){
+                E oldValue = (E)mElementData[i];
+                mElementData[i] = operator.apply(oldValue);
+            }
+        }
+    }
+
+    /*
+     * The following methods and nested class use Java 8 features.
+     */
+
+    /**
+     * Performs the given action for each element of the array until
+     * all elements have been processed or the action throws an
+     * exception.  Unless otherwise specified by the implementing
+     * class, actions are performed in the order of iteration (if an
+     * iteration order is specified).  Exceptions thrown by the action
+     * are relayed to the caller.
+     *
+     * @param action The action to be performed for each element
+     */
+    public void forEach(Consumer<? super E> action) {
+        if (isGraduate(Assignment1a)) {
+            // TODO - Graduate students you fill in here
+            //  using a for-each loop for assignment 1a.
+            Iterator<E> it = iterator();
+            while (it.hasNext()){
+                action.accept(it.next());
+            }
+
+
+        } else if (isGraduate(Assignment1b)) {
+            // TODO - Graduate students you fill in here using the
+            //  Java stream forEach() method for assignment 1b.
+            this.stream().forEach(action);
+
+        } else if (isUndergraduate(Assignment1a)) {
+            // TODO - Undergraduate students you fill in here using
+            //  a simple for loop for assignment 1a.
+            for(int i = 0; i < mSize; i++){
+                action.accept((E)mElementData[i]);
+            }
+        } else if (isUndergraduate(Assignment1b)) {
+            // TODO - Undergraduate students you fill in here
+            //  using a for-each loop for assignment 1b.
+            for(int i = 0; i < mSize; i++){
+                action.accept((E)mElementData[i]);
+            }
+        } else {
+            throw new IllegalStateException("unreachable");
+        }
+    }
+
+    /**
+     * Creates a {@link Spliterator} over the elements in the array.
+     * The default method define here simply returns null.
+     * <p>
+     *
+     * @return null (not implemented in this base class)
+     */
+    public Spliterator<E> spliterator() {
+        if (isGraduate(Assignment1b)) {
+            // TODO - you fill in here if your assignment matches either condition.
+            return new ArraySpliterator<>(this, 0, -1);
+        } else {
+            throw new IllegalStateException("This exception should never occur.");
+        }
     }
 
     /**
@@ -412,12 +504,14 @@ public class UnsynchronizedArray<E>
          * Current position in the Array (defaults to 0).
          */
         // TODO - you fill in here.
+
         int cursor;
         /**
          * Index of last element returned; -1 if no such element.
          */
         // TODO - you fill in here.
         int lastRet = -1;
+
         /**
          * @return True if the iteration has more elements that
          * haven't been iterated through yet, else false.
@@ -436,11 +530,9 @@ public class UnsynchronizedArray<E>
         public E next() {
             // TODO - you fill in here (replace 'return null' with proper code).
             int i = cursor;
-            if (i >= mSize)
+            if (mSize == 0 || i >= mSize)
                 throw new NoSuchElementException();
-            Object[] elementData = mElementData;
-            if (i >= elementData.length)
-                throw new ConcurrentModificationException();
+            Object[] elementData = UnsynchronizedArray.this.mElementData;
             cursor = i + 1;
             return (E) elementData[lastRet = i];
         }
@@ -467,9 +559,5 @@ public class UnsynchronizedArray<E>
                 throw new ConcurrentModificationException();
             }
         }
-    }
-
-    private String outOfBoundsMsg(int index) {
-        return "Index: "+index+", Size: "+mSize;
     }
 }
